@@ -9,4 +9,10 @@ router.post('/signup', User.signUp);
 router.get('/score', User.authentication, Score.getScoreList);
 router.post('/score', User.authentication, Score.recordNewScore);
 
+router.get('/auth', User.authentication, function(req, res) {
+  res.json({
+    error: null,
+  });
+});
+
 module.exports = router;
