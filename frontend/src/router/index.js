@@ -18,6 +18,19 @@ export default new Router({
       path: '/signup',
       name: 'SignUp',
       component: SignUp,
+      beforeEnter: (to, from, next) => {
+        fetch('/hamster/auth', {
+          credentials: 'include',
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error === '未登录') {
+              return next()
+            }
+
+            next('/hamster')
+          })
+      },
     },
     {
       path: '/hamster',

@@ -10,10 +10,12 @@ export default {
 }
 </script>
 
-<style>
-body {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+<style lang="scss" scoped>
+.app {
+  height: 100vh;
+}
+
+.app.hide {
+  overflow: hidden;
 }
 </style>

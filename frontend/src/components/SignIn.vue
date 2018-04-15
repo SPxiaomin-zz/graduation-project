@@ -59,6 +59,7 @@ export default {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           body: `name=${this.form.name}&password=${this.form.password}`,
+          credentials: 'include',
         })
           .then(response => response.json())
           .then(({ error }) => {
