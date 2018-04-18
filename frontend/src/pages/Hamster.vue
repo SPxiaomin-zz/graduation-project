@@ -31,6 +31,19 @@
         </tr>
       </tbody>
     </table>
+
+    <el-dialog
+      title="战绩"
+      :visible.sync="dialogVisible"
+      width="80%">
+      <span>分数：{{ this.tempScoreInfo.score }}分</span>
+      /
+      <span>命中率: {{ this.tempScoreInfo.hitRate }}%</span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">继续游戏</el-button>
+        <el-button type="primary" @click="jumpScorePage">查看分数</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,9 +55,12 @@ export default {
       hitRate: 0,
       timeLeft_secs: 60,
       cellHavingHamster: [],
+      tempScoreInfo: {},
 
       timeLeftInterval: null,
       releaseInterval: null,
+
+      dialogVisible: false,
     }
   },
   methods: {
@@ -93,12 +109,21 @@ export default {
     endGame() {
       clearInterval(this.timeLeftInterval)
       clearInterval(this.releaseInterval)
+
+      this.tempScoreInfo = {
+        score: this.score,
+        hitRate: this.hitRate,
+      }
+      this.dialogVisible = true
+
       this.score = 0
       this.hitRate = 0
       this.timeLeft_secs =  60
       this.cellHavingHamster = []
+    },
 
-      // stop 弹出分数提示，并可以进入英雄榜单
+    jumpScorePage() {
+      this.$router.push('/score')
     },
   },
   mounted() {

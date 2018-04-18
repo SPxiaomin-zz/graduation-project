@@ -36,11 +36,37 @@ export default new Router({
       path: '/hamster',
       name: 'Hamster',
       component: Hamster,
+      beforeEnter: (to, from, next) => {
+        fetch('/hamster/auth', {
+          credentials: 'include',
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error === '未登录') {
+              return next('/signup')
+            }
+
+            next()
+          })
+      },
     },
     {
       path: '/score',
       name: 'Score',
       component: Score,
+      beforeEnter: (to, from, next) => {
+        fetch('/hamster/auth', {
+          credentials: 'include',
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error === '未登录') {
+              return next('/signup')
+            }
+
+            next()
+          })
+      },
     },
   ],
 })
