@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const userInfoSchema = new mongoose.Schema({
   name: String,
   password: String,
-  score: Array 
+  scores: Array 
 });
 
 // 创建model

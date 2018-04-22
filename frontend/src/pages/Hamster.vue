@@ -2,8 +2,8 @@
   <div class="hamster">
     <div class="header">
       <div class="btn-container">
-        <el-button type="primary" @click="startGame">开始游戏</el-button>
-        <el-button @click="endGame">结束游戏</el-button>
+        <el-button type="primary" @click="startGame" :disabled="playing">开始游戏</el-button>
+        <el-button @click="endGame" :disabled="!playing">结束游戏</el-button>
       </div>
       <div class="game-infos">
         <span>分数: {{ score }}分</span>
@@ -57,6 +57,8 @@ export default {
       cellHavingHamster: [],
       tempScoreInfo: {},
 
+      playing: false,
+
       timeLeftInterval: null,
       releaseInterval: null,
 
@@ -102,11 +104,15 @@ export default {
     },
 
     startGame() {
+      this.playing = true
+
       this.releaseInterval = setInterval(this.releaseHamster, 1000)
       this.calculateTimeLeft()
     },
 
     endGame() {
+      this.playing = false
+
       clearInterval(this.timeLeftInterval)
       clearInterval(this.releaseInterval)
 
@@ -115,6 +121,19 @@ export default {
         hitRate: this.hitRate,
       }
       this.dialogVisible = true
+      
+      fetch('/hamster/score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `score=${this.score}&hitRate=${this.hitRate}`,
+        credentials: 'include',
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+        })
 
       this.score = 0
       this.hitRate = 0

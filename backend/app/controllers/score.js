@@ -2,12 +2,16 @@ const UserInfo = require('../models/userInfo');
 
 const recordNewScore = function(req, res) {
   const user = req.session.user;
-  const newScore = req.body.score
+  const { score, hitRate } = req.body
 
   UserInfo.findById(user._id, function(err, user) {
     if (err) return err;
 
-    user.score.push(newScore);
+    user.scores.push({
+      score,
+      hitRate,
+      date: new Date(),
+    });
 
     user.save(function(err, updatedUser) {
       if (err) return err;
@@ -26,7 +30,7 @@ const getScoreList = function(req, res) {
     if (err) return err;
 
     res.json({
-      score: user.score
+      scores: user.scores
     });
   });
 };
