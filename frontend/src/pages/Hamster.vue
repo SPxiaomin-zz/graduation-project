@@ -1,10 +1,12 @@
 <template>
   <div class="hamster">
     <div class="header">
+
       <div class="btn-container">
         <el-button type="primary" @click="startGame" :disabled="playing">开始游戏</el-button>
         <el-button @click="endGame" :disabled="!playing">结束游戏</el-button>
       </div>
+
       <div class="game-infos">
         <span>分数: {{ score }}分</span>
         /
@@ -12,6 +14,27 @@
         /
         <span>倒计时: {{ timeLeft_secs }}s</span>
       </div>
+
+      <div class="funs-container">
+        <el-input
+          class="mouse-present-sequence"
+          placeholder="老鼠出现次序(<6)"
+          v-model="firstMousesString"
+          :disabled="playing"></el-input>
+
+        <el-select
+          v-model="speed"
+          placeholder="调速"
+          :disabled="playing">
+          <el-option
+            v-for="item in speedOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </div>
+
     </div>
 
     <table class="playground">
@@ -63,7 +86,24 @@ export default {
       releaseInterval: null,
 
       dialogVisible: false,
+
+      firstMousesString: '',
+      firstMouses: [],
+
+      speedOptions: [
+        { label: '1倍速度', value: 1 },
+        { label: '3倍速度', value: 3 },
+        { label: '6倍速度', value: 6 },
+      ],
+      speed: 1,
     }
+  },
+  computed: {
+  },
+  watch: {
+    firstMousesString() {
+      this.firstMouses = this.firstMousesString.slice(0, 6).split('')
+    },
   },
   methods: {
     hitHamsterHandler(coordinate) {
@@ -82,17 +122,37 @@ export default {
         this.timeLeft_secs -= 1
 
         if (this.timeLeft_secs == 0) {
-          return endGame()
+          return this.endGame()
         }
       }, 1000)
     },
 
     releaseHamster() {
-      const tempI = Math.floor(Math.random() * 3 + 1)
-      const tempJ = Math.floor(Math.random() * 3 + 1)
-      const hamsterCoordinate = `${tempI}${tempJ}`
+      let hamsterCoordinate
 
-      this.cellHavingHamster.push(hamsterCoordinate)
+      if (this.firstMouses.length) {
+        const position = this.firstMouses.shift() 
+        hamsterCoordinate = {
+          1: '11',
+          2: '12',
+          3: '13',
+          4: '21',
+          5: '22',
+          6: '23',
+          7: '31',
+          8: '32',
+          9: '33',
+        }[position]
+
+        this.cellHavingHamster.push(hamsterCoordinate)
+      } else {
+        const tempI = Math.floor(Math.random() * 3 + 1)
+        const tempJ = Math.floor(Math.random() * 3 + 1)
+        hamsterCoordinate = `${tempI}${tempJ}`
+  
+        this.cellHavingHamster.push(hamsterCoordinate)
+      }
+
 
       setTimeout(() => {
         const index = this.cellHavingHamster.indexOf(hamsterCoordinate)
@@ -100,7 +160,7 @@ export default {
         if (index !== -1) {
           this.cellHavingHamster.splice(index, 1)
         }
-      }, 3000)
+      }, 3000 / this.speed)
     },
 
     startGame() {
@@ -160,7 +220,7 @@ export default {
  */
 
 .header {
-  height: 20%;
+  height: 25%;
 
   .btn-container {
     text-align: center;
@@ -171,6 +231,14 @@ export default {
     text-align: center;
     line-height: 50px;
   }
+
+  .funs-container {
+    display: flex;
+  }
+
+  .mouse-present-sequence {
+    width: auto;
+  }
 }
 
 /*
@@ -179,7 +247,7 @@ export default {
 
 .playground {
   width: 100%;
-  height: 80%;
+  height: 75%;
 
   .cell {
     background-color: rgba(64, 158, 255, 0.11);
