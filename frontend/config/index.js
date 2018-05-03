@@ -27,6 +27,18 @@ module.exports = {
         target: 'http://localhost:3000/',
         changeOrigin: true,
       },
+      '/hamster/user': {
+        target: 'http://localhost:3000/',
+        changeOrigin: true,
+      },
+      '/hamster/user/*': {
+        target: 'http://localhost:3000/',
+        changeOrigin: true,
+      },
+      '/hamster/admin-auth': {
+        target: 'http://localhost:3000/',
+        changeOrigin: true,
+      },
     },
 
     // Various Dev Server settings

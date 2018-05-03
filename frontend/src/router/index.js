@@ -5,6 +5,7 @@ import SignUp from '@/pages/SignUp'
 import Hamster from '@/pages/Hamster'
 import Score from '@/pages/Score'
 import User from '@/pages/User'
+import UserInfoEdit from '@/pages/UserInfoEdit'
 
 Vue.use(Router)
 
@@ -74,13 +75,39 @@ export default new Router({
       name: 'User',
       component: User,
       beforeEnter: (to, from, next) => {
-        fetch('/hamster/auth', {
+        fetch('/hamster/admin-auth', {
           credentials: 'include',
         })
           .then(response => response.json())
           .then(data => {
             if (data.error === '未登录') {
               return next('/signup')
+            }
+
+            if (data.error === '非管理员') {
+              return next('/hamster')
+            }
+
+            next()
+          })
+      },
+    },
+    {
+      path: '/user/:name',
+      name: 'UserInfoEdit',
+      component: UserInfoEdit,
+      beforeEnter: (to, from, next) => {
+        fetch('/hamster/admin-auth', {
+          credentials: 'include',
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error === '未登录') {
+              return next('/signup')
+            }
+
+            if (data.error === '非管理员') {
+              return next('/hamster')
             }
 
             next()

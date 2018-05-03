@@ -107,6 +107,8 @@ export default {
   },
   methods: {
     hitHamsterHandler(coordinate) {
+      if (!this.playing) return
+
       this.score += 1
       this.hitRate = ((this.score / 60) * 100).toFixed(2)
 
